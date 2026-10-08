@@ -24,6 +24,10 @@ is_malicioused=false
 filename=$(basename "$file")
 ext="${filename##*.}"
 
+if grep -qxF "$filename" "whitelist.txt"; then
+continue;
+fi
+
 
 for item in "${extension[@]}"; do
 if [ "$item" = "$ext" ]; then
