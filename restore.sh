@@ -58,7 +58,7 @@ file_name=$(basename "$selected_file")
 
 
 if [ "$choice" -eq 1 ]; then 
-
+echo "$file_name" >> whitelist.txt
 mv "$malicious_dir/$file_name" "$dir/"
 echo "Restored $file_name to $dir."
 
