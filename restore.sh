@@ -54,3 +54,25 @@ echo ""
 
 selected_file="${files[number-1]}"
 file_name=$(basename "$selected_file")
+
+
+
+if [ "$choice" -eq 1 ]; then 
+
+mv "$malicious_dir/$file_name" "$dir/"
+echo "Restored $file_name to $dir."
+
+elif [ "$choice" -eq 2 ]; then
+rm "$malicious_dir/$file_name"
+echo "$file_name deleted permanently."
+
+elif [ "$choice" -eq 3 ]; then 
+continue
+
+else 
+echo "invalid choice"
+
+fi
+
+done
+
