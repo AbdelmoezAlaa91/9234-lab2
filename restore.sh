@@ -34,3 +34,23 @@ i=$((i + 1))
 
 done
 
+
+echo "enter a number: "
+read number
+echo ""
+echo ""
+
+echo "1:Restore this file back into dir"
+echo "2:Permanently delete this file from malicious_dir (it was genuinely malicious)"
+echo "3: Leave this file as-is and go back to the list"
+
+echo ""
+echo ""
+
+echo "enter your choice 1-3"
+read choice
+echo ""
+echo ""
+
+selected_file="${files[number-1]}"
+file_name=$(basename "$selected_file")
