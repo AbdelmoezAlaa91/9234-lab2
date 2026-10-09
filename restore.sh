@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [ $# -ne 2 ]; then
 echo "you should enter 2 parameters"
 exit 1
