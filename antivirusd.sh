@@ -1,8 +1,8 @@
 #!/bin/bash
 
 if [ $# -ne 3 ]; then
-echo "you should enter 3 parameters"
-exit 1
+    echo "you should enter 3 parameters"
+    exit 1
 fi
 
 dir="$1"
@@ -13,72 +13,64 @@ extension=("exe" "bat" "vbs" "scr" "ps1")
 content=("virus" "trojan" "malware" "worm" "ransomware")
 
 if [ ! -d "$1" ] || [ ! -d "$2" ]; then
-echo " directories are not found"
-exit 1
+    echo " directories are not found"
+    exit 1
 fi
 
 scan(){
-for file in "$dir"/*; do
 
-is_malicioused=false
-filename=$(basename "$file")
-ext="${filename##*.}"
+    touch whitelist.txt
 
-if grep -qxF "$filename" "whitelist.txt"; then
-continue;
-fi
+    for file in "$dir"/*; do
+
+        [ -f "$file" ] || continue
+
+        is_malicioused=false
+        filename=$(basename "$file")
+        ext="${filename##*.}"
 
 
-for item in "${extension[@]}"; do
-if [ "$item" = "$ext" ]; then
+        if grep -qF "$filename" "whitelist.txt"; then
+            continue
+        fi
 
-cp "$dir/$filename" "$malicious_dir/"
-rm "$dir/$filename"
 
-is_malicioused=true
+        for item in "${extension[@]}"; do
+            if [ "$item" = "$ext" ]; then
+                cp "$dir/$filename" "$malicious_dir/"
+                rm "$dir/$filename"
+                is_malicioused=true
+                break
+            fi
+        done
 
-break
-fi
+        if [ "$is_malicioused" = true ]; then
+            continue 
+        fi
 
-done
 
-if [ "$is_malicioused" = true ]; then
-continue 
-fi
+        for item in "${content[@]}"; do
+            if grep -qi "$item" "$file"; then
+                cp "$dir/$filename" "$malicious_dir/"
+                rm "$dir/$filename"
+                break
+            fi 
+        done
 
-for item in "${content[@]}"; do
-
-if grep -qi "$item" "$file"; then
-cp "$dir/$filename" "$malicious_dir/"
-rm "$dir/$filename"
-
-break
-
-fi 
-
-done
-
-done
+    done
 }
 
-
 if [ ! -f "directory-info.last" ]; then
-
-scan
-ls -l "$dir" >directory-info.last
-
+    scan
+    ls -l "$dir" > directory-info.last
 fi
 
 while true ; do
+    sleep "$interval_secs"
+    ls -l "$dir" > directory-info.new
 
-sleep $interval_secs
-ls -l "$dir" > directory-info.new
-
-if ! cmp -s directory-info.last directory-info.new; then
-
-scan
-ls -l "$dir" > directory-info.last
-
-fi
-
+    if ! cmp -s directory-info.last directory-info.new; then
+        scan
+        ls -l "$dir" > directory-info.last
+    fi
 done
